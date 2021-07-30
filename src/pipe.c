@@ -1,38 +1,39 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "../lib/motd.h"
-
-int main(void) {
-    printf("Output: %s\n", pipe_of("pacman -Q", "wc -l"));
-
-    return 0;
-}
 
 void strsplit(char *str, char *str_arr[]) {
     char *token = strtok(str, " ");
+    int i;
 
-    for (int i = 0; token != NULL; i++) {
-        str_arr[i] = (char *) calloc(strlen(token) + 1, sizeof(char));
+    /* For each word in str_arr (as is using space as delimiter) 
+     * creates a new value in the string array and copies token in it */
+    for (i = 0; token != NULL; i++) {
+        str_arr = (char **) realloc(str_arr, (sizeof(*str_arr) + 1) * sizeof(char *));  MCHECK(str_arr)
+        str_arr[i] = (char *) calloc(strlen(token) + 1, sizeof(char));  MCHECK(str_arr[i])
         strcpy(str_arr[i], token);
         token = strtok(NULL, " ");
   	}
+    
+    // Set the last element of the array as NULL 
+    str_arr = (char **) realloc(str_arr, (sizeof(*str_arr) + 1) * sizeof(char *));  MCHECK(str_arr)
+    str_arr[i] = NULL;
 }
 
-char *pipe_of(char *op1, char *op2) {
-  
-  /* 
-   * TO-DO:
-   * 1- Split both strings in multiple ones 
-   * 2- Store them in an array of strings
-   * 3- Use this array as argument of execv
-  */
+char *pipe_of(const char op1[], const char op2[], int buffer_size) {
 
-    char **first_arg, **second_arg;
-    strsplit(op1, first_arg);
-    strsplit(op2, second_arg);
+    // Creates new strings to contain the operations
+    char *string_1 = (char *) calloc(strlen(op1) + 1, sizeof(char));  MCHECK(string_1)
+    strcpy(string_1, op1);
+    char *string_2 = (char *) calloc(strlen(op2) + 1, sizeof(char));  MCHECK(string_2)
+    strcpy(string_2, op2);
+    
+    // Declaring the two arguments array to use in exec later
+    char **arg_1 = (char **) calloc(1, sizeof(char *));  MCHECK(arg_1)
+    strsplit(string_1, arg_1);
+    char **arg_2 = (char **) calloc(1, sizeof(char *));  MCHECK(arg_2)
+    strsplit(string_2, arg_2);
 
+
+    // Open the first pipe from the first child to the second
     int fd_1[2];
     if (pipe(fd_1) == -1) {
         fprintf(stderr, "Could not open the first pipe.\n");
@@ -46,18 +47,19 @@ char *pipe_of(char *op1, char *op2) {
     }
     else if (pid_1 == 0) {
         // First Child process
-        // duplicate the write fd
+        // duplicate the write end of the pipe, fd_1
         dup2(fd_1[1], STDOUT_FILENO);
         close(fd_1[0]);
         close(fd_1[1]);
 
-        execlp("pacman", "pacman", "-Q", NULL);
+        execvp(arg_1[0], arg_1);
 
         // If the program is here, then the exec failed
-        fprintf(stderr, "Could not execute the command.\n");
+        fprintf(stderr, "Could not execute the command %s.\n", arg_1[0]);
         exit(EXIT_FAILURE);
     }
 
+    // Open the other pipe from the second child to the parent
     int fd_2[2];
     if (pipe(fd_2) == -1) {
         fprintf(stderr, "Could not open the second pipe.\n");
@@ -71,7 +73,7 @@ char *pipe_of(char *op1, char *op2) {
     }
     else if (pid_2 == 0) {
         // Second Child process
-        // duplicate both fds
+        // duplicate both file descriptors (read 1 and write 2)
         dup2(fd_1[0], STDIN_FILENO);
         dup2(fd_2[1], STDOUT_FILENO);
         close(fd_1[0]);
@@ -79,10 +81,10 @@ char *pipe_of(char *op1, char *op2) {
         close(fd_2[0]);
         close(fd_2[1]);
 
-        execlp("wc", "wc", "-l", NULL);
+        execvp(arg_2[0], arg_2);
 
         // If the program is here, then the exec failed
-        fprintf(stderr, "Could not execute the command.\n");
+        fprintf(stderr, "Could not execute the command %s.\n", arg_2[0]);
         exit(EXIT_FAILURE);
     }
     
@@ -92,19 +94,22 @@ char *pipe_of(char *op1, char *op2) {
     waitpid(pid_1, NULL, 0);
 
     // Creates a buffer to store the result of the pipe
-    char buffer[BSIZE];
-    if (read(fd_2[0], buffer, sizeof(char) * BSIZE) == -1) {
+    char *buffer = (char *) calloc(buffer_size, sizeof(char));
+    if (read(fd_2[0], buffer, sizeof(char) * buffer_size) == -1) {
         fprintf(stderr, "Could not get output from the second child process.\n");
         exit(EXIT_FAILURE);
     }
     // Replace the last char with the terminator
     buffer[strlen(buffer) - 1] = '\0';
 
-    printf("Output: %s\n", buffer);
-    
     close(fd_2[0]);
+    free(string_1);
+    free(string_2);
+    free(arg_1);
+    free(arg_2);
 
     waitpid(pid_2, NULL, 0);
 
-    return 0;
+
+    return buffer;
 }

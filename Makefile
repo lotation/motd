@@ -18,7 +18,7 @@ install: bin/motd
 	install -m 755 bin/motd $(PREFIX)/bin
 
 clean veryclean:
-	$(RM)  $(RMFLAGS) bin/motd
+	$(RM) $(RMFLAGS) bin/motd
 
 uninstall:
 	$(RM) $(RMFLAGS) $(PREFIX)/bin/motd    
