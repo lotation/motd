@@ -33,33 +33,29 @@ void sysinfo(void) {
     char *distro = get_distro();
 
     // Badly written attempt to mimic the bash pipe
-    int upgrades = atoi(pipe_of("checkupdates 2>/dev/null", "wc -l", 6));
-    int pkgs = atoi(pipe_of("pacman -Q", "wc -l", 6));
-    int aur_pkgs = atoi(pipe_of("pacman -Qm", "wc -l", 6));
+    int upgrades = atoi(pipe_of("checkupdates", "wc -l", BSIZE));
+    int pkgs = atoi(pipe_of("pacman -Q", "wc -l", BSIZE));
+    int aur_pkgs = atoi(pipe_of("pacman -Qm", "wc -l", BSIZE));
 
 
-    printf(COLOR_MAGENTA "Distro" COLOR_RESET ":\t \t %s Linux\n", distro);
+    printf(COLOR_MAGENTA "Distro" COLOR_RESET ":\t \t %s\n", distro);
     printf(COLOR_MAGENTA "Kernel" COLOR_RESET ":\t \t %s\n", kernel);
     printf(COLOR_MAGENTA "Packages" COLOR_RESET":\t %d  (" COLOR_MAGENTA "%d" COLOR_RESET " upgradable)\n", pkgs + aur_pkgs, upgrades);
     printf("\n");
 
+    free(distro);
 }
 
 
 void fsuse(void) {
     // Grep info on the filesystems
-    char root[] = "/";
-    char home[] = "/home";
-    //char data[] = "/media/DATA";
-
-    struct fsinfo fs_root = get_fs_info(root);
-    struct fsinfo fs_home = get_fs_info(home);
-    //struct fsinfo fs_data = get_fs_info(data);
-
-    printfs(root, fs_root);
-    printfs(home, fs_home);
-    //printfs(data, fs_data);
+    char **system_fs = get_fs_mountpoint();
     
+    for (int i = 0; system_fs[i] != NULL; i++) {
+        struct fsinfo fs_info = get_fs_info(system_fs[i]);
+
+        printfs(system_fs[i], fs_info);
+    }
 }
 
 void goodbye(void) {

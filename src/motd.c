@@ -1,5 +1,22 @@
 #include "../lib/motd.h"
 
+bool is_in_string(const char *target, const char *string) {
+    size_t i, j, foo_i;
+
+    for (i = 0; i < strlen(target); i++) {
+        j = 0; foo_i = i;
+        while (target[foo_i] == string[j] && j < strlen(string)) {      
+            if (j == (strlen(string) - 1))
+                return true;
+
+            j++;
+            foo_i++;
+        }
+    }
+
+    return false;
+}
+
 void get_datetime(char *time_string) {
     time_t current_time = time(NULL);
     if (current_time == ((time_t) - 1)) {
@@ -15,20 +32,36 @@ void get_datetime(char *time_string) {
 }
 
 char *get_distro(void) {
-    char *name = (char *) calloc(STR_SIZE, sizeof(char));  MCHECK(name)
-    char index;
+    char filename[] = "/etc/lsb-release";
+    char *name = (char *) calloc(1, sizeof(char));
+    char *buffer = (char *) calloc(DISTRO, sizeof(char));
 
     FILE *fp;
-    fp = fopen("/etc/os-release", "r");
+    fp = fopen(filename, "r");
     if (fp == NULL) {
-        (void) fprintf(stderr, "Failed to open /etc/os-release file.\n");
+        fprintf(stderr, "Failed to open %s.\n", filename);
         exit(EXIT_FAILURE);
     }
 
-    while ((index = fgetc(fp))  != EOF) {
-        fscanf(fp, "NAME=\"%s\"", name);
+    while (fgets(buffer, DISTRO, fp)) {
+        // Remove the new line
+        buffer[strlen(buffer) - 1] = '\0';
+
+        if (is_in_string(buffer, "DESCRIPTION")) {
+            char *tmp = strdup(buffer);
+            char *token = strtok(tmp, "=");
+
+            token = strtok(NULL, "\"");
+
+            // Save distro name
+            name = (char *) realloc(name, (strlen(token) + 1) * sizeof(char));
+            strcpy(name, token);
+
+            free(tmp);
+        }
     }
 
+    free(buffer);
     fclose(fp);
 
     return name;
@@ -58,7 +91,7 @@ fsinfo get_fs_info(const char *path) {
     struct fsinfo fs_info;
 
     if (statvfs(path, &stat) != 0) {
-        (void) fprintf(stderr, "Failed to obtain filesystem usage.\n");
+        fprintf(stderr, "Failed to obtain filesystem usage.\n");
         exit(EXIT_FAILURE);
     }
 
@@ -70,4 +103,41 @@ fsinfo get_fs_info(const char *path) {
     fs_info.used_percent = fs_info.used * 100.00 / fs_info.total;
 
     return fs_info;
+}
+
+char **get_fs_mountpoint(void) {
+    char **sysfs = (char **) calloc(1, sizeof(char *));
+    char filename[] = "/proc/mounts";
+    char *buffer = (char *) calloc(LINE, sizeof(char));
+
+    FILE *fp = fopen(filename, "r");
+    if (fp == NULL) {
+        fprintf(stderr, "Could not open %s.\n", filename);
+        exit(EXIT_FAILURE);
+    }
+
+    int i = 0;
+    while (fgets(buffer, LINE, fp)) {
+        buffer[strlen(buffer)-1] = '\0';
+
+        if (is_in_string(buffer, "/dev/sd") || is_in_string(buffer, "/dev/nvme")) {
+            char *tmp = strdup(buffer);
+            char *token = strtok(tmp, " ");
+
+            // Skip the first token since here it's not needed
+            token = strtok(NULL, " ");
+
+            // Add a new string
+            sysfs = (char **) realloc(sysfs, (sizeof(*sysfs) + 1) * sizeof(char *));
+            sysfs[i] = (char *) calloc(strlen(token) + 1, sizeof(char));
+            strcpy(sysfs[i], token);
+
+            i++;
+            free(tmp);
+        }
+    }
+
+    fclose(fp);
+
+    return sysfs;
 }

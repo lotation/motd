@@ -103,6 +103,7 @@ char *pipe_of(const char op1[], const char op2[], int buffer_size) {
     buffer[strlen(buffer) - 1] = '\0';
 
     close(fd_2[0]);
+    
     free(string_1);
     free(string_2);
     free(arg_1);
