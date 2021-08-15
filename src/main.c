@@ -34,7 +34,7 @@ void sysinfo(void) {
 
     // Badly written attempt to mimic the bash pipe
     int upgrades = atoi(pipe_of("checkupdates", "wc -l", BSIZE));
-    int pkgs = atoi(pipe_of("pacman -Q", "wc -l", BSIZE));
+    int pkgs     = atoi(pipe_of("pacman -Q", "wc -l", BSIZE));
     int aur_pkgs = atoi(pipe_of("pacman -Qm", "wc -l", BSIZE));
 
 

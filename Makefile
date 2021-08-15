@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -pedantic -O3
+CFLAGS = -Wall -Werror -O3
 RM = rm
 RMFLAGS = -f
 
