@@ -33,14 +33,16 @@ void sysinfo(void) {
     char *distro = get_distro();
 
     // Badly written attempt to mimic the bash pipe
-    int upgrades = atoi(pipe_of("checkupdates", "wc -l", BSIZE));
     int pkgs     = atoi(pipe_of("pacman -Q", "wc -l", BSIZE));
     int aur_pkgs = atoi(pipe_of("pacman -Qm", "wc -l", BSIZE));
+    int upgrades     = atoi(pipe_of("checkupdates", "wc -l", BSIZE));
+    int aur_upgrades = atoi(pipe_of("checkupdates-aur", "wc -l", BSIZE));
 
 
     printf(COLOR_MAGENTA "Distro" COLOR_RESET ":\t \t %s\n", distro);
     printf(COLOR_MAGENTA "Kernel" COLOR_RESET ":\t \t %s\n", kernel);
-    printf(COLOR_MAGENTA "Packages" COLOR_RESET":\t %d  (" COLOR_MAGENTA "%d" COLOR_RESET " upgradable)\n", pkgs + aur_pkgs, upgrades);
+    printf(COLOR_MAGENTA "Packages" COLOR_RESET":\t %d\t(" COLOR_MAGENTA "%d" COLOR_RESET " upgradable)\tpacman\n", pkgs, upgrades);
+    printf(                                   "\t\t %d\t(" COLOR_MAGENTA "%d" COLOR_RESET " upgradable)\tAUR\n", aur_pkgs, aur_upgrades);
     printf("\n");
 
     free(distro);

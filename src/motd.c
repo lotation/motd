@@ -136,6 +136,8 @@ char **get_fs_mountpoint(void) {
             free(tmp);
         }
     }
+    // Use NULL as terminator
+    sysfs[i] = NULL;
 
     fclose(fp);
 
