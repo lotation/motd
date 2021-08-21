@@ -42,15 +42,15 @@ void sysinfo(void) {
     printf(COLOR_MAGENTA "Distro" COLOR_RESET ":\t \t %s\n", distro);
     printf(COLOR_MAGENTA "Kernel" COLOR_RESET ":\t \t %s\n", kernel);
     
-    if (upgrades == 0) {
-        printf(COLOR_MAGENTA "Packages" COLOR_RESET":\t %d\tpacman\n", pkgs);
-    } else {
+    if (upgrades > 0) {
         printf(COLOR_MAGENTA "Packages" COLOR_RESET":\t %d\t(" COLOR_MAGENTA "%d" COLOR_RESET " upgradable)\tpacman\n", pkgs, upgrades);
-    }
-    if (aur_upgrades == 0) {
-        printf(                                   "\t\t %d\tAUR\n", aur_pkgs);
     } else {
+        printf(COLOR_MAGENTA "Packages" COLOR_RESET":\t %d pacman\n", pkgs);
+    }
+    if (aur_upgrades > 0) {
         printf(                                   "\t\t %d\t(" COLOR_MAGENTA "%d" COLOR_RESET " upgradable)\tAUR\n", aur_pkgs, aur_upgrades);
+    } else {
+        printf(                                   "\t\t %d AUR\n", aur_pkgs);
     }
     printf("\n");
 
