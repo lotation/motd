@@ -1,21 +1,6 @@
 #include "../lib/motd.h"
+#include <string.h>
 
-bool is_in_string(const char *target, const char *string) {
-    size_t i, j, foo_i;
-
-    for (i = 0; i < strlen(target); i++) {
-        j = 0; foo_i = i;
-        while (target[foo_i] == string[j] && j < strlen(string)) {      
-            if (j == (strlen(string) - 1))
-                return true;
-
-            j++;
-            foo_i++;
-        }
-    }
-
-    return false;
-}
 
 void get_datetime(char *time_string) {
     time_t current_time = time(NULL);
@@ -47,7 +32,7 @@ char *get_distro(void) {
         // Remove the new line
         buffer[strlen(buffer) - 1] = '\0';
 
-        if (is_in_string(buffer, "DESCRIPTION")) {
+        if (strstr(buffer, "DESCRIPTION")) {
             char *tmp = strdup(buffer);
             char *token = strtok(tmp, "=");
 
@@ -120,7 +105,7 @@ char **get_fs_mountpoint(void) {
     while (fgets(buffer, LINE, fp)) {
         buffer[strlen(buffer)-1] = '\0';
 
-        if (is_in_string(buffer, "/dev/sd") || is_in_string(buffer, "/dev/nvme")) {
+        if (strstr(buffer, "/dev/sd") || strstr(buffer, "/dev/nvme")) {
             char *tmp = strdup(buffer);
             char *token = strtok(tmp, " ");
 

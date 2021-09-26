@@ -14,7 +14,7 @@
 #define STR_SIZE  80  // => length of time_string
 #define BSIZE      6  // => 99 999 (10^5-1) packages in total
 #define DISTRO    40  // => max line length of /etc/lsb-release
-#define LINE     152  // => max line length of /proc/mounts
+#define LINE     192  // => max line length of /proc/mounts
 
 #define COLOR_MAGENTA "\033[38;5;197m"
 #define COLOR_RESET   "\033[0m" //"\x1b[0m"
@@ -38,7 +38,6 @@ void sysinfo(void);
 void fsuse(void);
 void goodbye(void);
 
-bool is_in_string(const char *target, const char *string);
 void get_datetime(char *time_string);
 char *get_distro(void);
 

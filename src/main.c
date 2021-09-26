@@ -47,7 +47,7 @@ void sysinfo(void) {
     } else {
         printf(COLOR_MAGENTA "Packages" COLOR_RESET":\t %d pacman\n", pkgs);
     }
-    if (aur_upgrades > 0) {
+    if (aur_upgrades > 2) {
         printf(                                   "\t\t %d\t(" COLOR_MAGENTA "%d" COLOR_RESET " upgradable)\tAUR\n", aur_pkgs, aur_upgrades);
     } else {
         printf(                                   "\t\t %d AUR\n", aur_pkgs);
