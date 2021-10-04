@@ -1,3 +1,4 @@
+# WIP
 # Maintainer: lotation <xlapsiu@gmail.com>
 
 pkgname=
@@ -7,7 +8,7 @@ pkgdesc=""
 arch=('')
 url="https://github.com/lotation/motd/"
 license=('GPL')
-depends=('lsb-release' 'pacman-contrib' 'perl-checkupdates-aur')
+depends=('lsb-release' 'pacman-contrib' 'perl-checkupdates-aur' 'fortune-mod')
 provides=($_pkgname)
 conflicts=($_pkgname)
 options=('!strip' '!emptydirs')
