@@ -105,7 +105,7 @@ char **get_fs_mountpoint(void) {
     while (fgets(buffer, LINE, fp)) {
         buffer[strlen(buffer)-1] = '\0';
 
-        if (strstr(buffer, "/dev/sd") || strstr(buffer, "/dev/nvme")) {
+        if (strstr(buffer, "/dev/sd") || strstr(buffer, "/dev/nvme") || strstr(buffer, "/dev/mmc")) {
             char *tmp = strdup(buffer);
             char *token = strtok(tmp, " ");
 
