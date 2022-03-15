@@ -1,0 +1,68 @@
+\hypertarget{pipe_8c}{}\doxysection{src/pipe.c File Reference}
+\label{pipe_8c}\index{src/pipe.c@{src/pipe.c}}
+{\ttfamily \#include \char`\"{}motd.\+h\char`\"{}}\newline
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{pipe_8c_a5ec1f3f552240b1d2b7da61d5a04beab}{strsplit}} (char $\ast$str, char $\ast$str\+\_\+arr\mbox{[}$\,$\mbox{]})
+\begin{DoxyCompactList}\small\item\em split the given string into substrings (using space as delimiter) \end{DoxyCompactList}\item 
+char $\ast$ \mbox{\hyperlink{pipe_8c_af3ec3eb6fda5a37e633f809889e2305f}{pipe\+\_\+of}} (const char op1\mbox{[}$\,$\mbox{]}, const char op2\mbox{[}$\,$\mbox{]}, int buffer\+\_\+size)
+\begin{DoxyCompactList}\small\item\em emulates the UNIX pipe redirecting the op1 stdout to op2 stdin \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyAuthor}{Author}
+lotation (\href{mailto:xlapsiu@gmail.com}{\texttt{ xlapsiu@gmail.\+com}}) 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+0.\+1 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+2021-\/11-\/02
+\end{DoxyDate}
+\hypertarget{pipe_8c_LICENSE}{}\doxysubsection{LICENSE}\label{pipe_8c_LICENSE}
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details at \href{https://www.gnu.org/copyleft/gpl.html}{\texttt{ https\+://www.\+gnu.\+org/copyleft/gpl.\+html}}\hypertarget{pipe_8c_DESCRIPTION}{}\doxysubsection{DESCRIPTION}\label{pipe_8c_DESCRIPTION}
+This file emulates UNIX pipe 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{pipe_8c_af3ec3eb6fda5a37e633f809889e2305f}\label{pipe_8c_af3ec3eb6fda5a37e633f809889e2305f}} 
+\index{pipe.c@{pipe.c}!pipe\_of@{pipe\_of}}
+\index{pipe\_of@{pipe\_of}!pipe.c@{pipe.c}}
+\doxysubsubsection{\texorpdfstring{pipe\_of()}{pipe\_of()}}
+{\footnotesize\ttfamily char $\ast$ pipe\+\_\+of (\begin{DoxyParamCaption}\item[{const char}]{op1\mbox{[}$\,$\mbox{]},  }\item[{const char}]{op2\mbox{[}$\,$\mbox{]},  }\item[{int}]{buffer\+\_\+size }\end{DoxyParamCaption})}
+
+
+
+emulates the UNIX pipe redirecting the op1 stdout to op2 stdin 
+
+
+\begin{DoxyParams}{Parameters}
+{\em op1} & first command \\
+\hline
+{\em op2} & second command \\
+\hline
+{\em buffer\+\_\+size} & size of the output buffer \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+char$\ast$ buffer with op2 output 
+\end{DoxyReturn}
+\mbox{\Hypertarget{pipe_8c_a5ec1f3f552240b1d2b7da61d5a04beab}\label{pipe_8c_a5ec1f3f552240b1d2b7da61d5a04beab}} 
+\index{pipe.c@{pipe.c}!strsplit@{strsplit}}
+\index{strsplit@{strsplit}!pipe.c@{pipe.c}}
+\doxysubsubsection{\texorpdfstring{strsplit()}{strsplit()}}
+{\footnotesize\ttfamily void strsplit (\begin{DoxyParamCaption}\item[{char $\ast$}]{str,  }\item[{char $\ast$}]{str\+\_\+arr\mbox{[}$\,$\mbox{]} }\end{DoxyParamCaption})}
+
+
+
+split the given string into substrings (using space as delimiter) 
+
+
+\begin{DoxyParams}{Parameters}
+{\em str} & phrase string \\
+\hline
+{\em str\+\_\+arr} & result strings array \\
+\hline
+\end{DoxyParams}

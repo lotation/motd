@@ -1,5 +1,36 @@
-#include "../lib/motd.h"
+/**
+ * @file pipe.c
+ * @author lotation (xlapsiu@gmail.com)
+ * @brief 
+ * @version 0.1
+ * @date 2021-11-02
+ * 
+ * @section LICENSE
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
+ * the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details at
+ * https://www.gnu.org/copyleft/gpl.html
+ *
+ * @section DESCRIPTION
+ * 
+ * This file emulates UNIX pipe
+ * 
+ */
+#include "motd.h"
 
+/**
+ * @brief split the given string into substrings (using space as delimiter)
+ * 
+ * @param str phrase string
+ * @param str_arr result strings array
+ */
 void strsplit(char *str, char *str_arr[]) {
     char *token = strtok(str, " ");
     int i;
@@ -18,6 +49,14 @@ void strsplit(char *str, char *str_arr[]) {
     str_arr[i] = NULL;
 }
 
+/**
+ * @brief emulates the UNIX pipe redirecting the op1 stdout to op2 stdin
+ * 
+ * @param op1 first command
+ * @param op2 second command
+ * @param buffer_size size of the output buffer
+ * @return char* buffer with op2 output
+ */
 char *pipe_of(const char op1[], const char op2[], int buffer_size) {
 
     // Creates new strings to contain the operations

@@ -1,7 +1,38 @@
-#include "../lib/motd.h"
-#include <string.h>
+/**
+ * @file motd.c
+ * @author lotation
+ * @brief 
+ * @version 0.2
+ * @date 2022-03-15
+ * 
+ * @section LICENSE
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
+ * the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details at
+ * https://www.gnu.org/copyleft/gpl.html
+ *
+ * @section DESCRIPTION
+ *
+ * This file has motd function definition
+ * 
+ */
 
+#include "motd.h"
+#include <stdio.h>
+#include <stdlib.h>
 
+/**
+ * @brief Get system datetime
+ * 
+ * @param time_string formatted string with datetime to display in the first row
+ */
 void get_datetime(char *time_string) {
     time_t current_time = time(NULL);
     if (current_time == ((time_t) - 1)) {
@@ -16,6 +47,11 @@ void get_datetime(char *time_string) {
     strftime(time_string, STR_SIZE, "[ %a %d %b  %t                       -                        %t %R ]", time_info);
 }
 
+/**
+ * @brief Get distribution name
+ * 
+ * @return char* name of the distro
+ */
 char *get_distro(void) {
     char filename[] = "/etc/lsb-release";
     char *name = (char *) calloc(1, sizeof(char));
@@ -52,6 +88,12 @@ char *get_distro(void) {
     return name;
 }
 
+/**
+ * @brief Helps printing filesystem usage
+ * 
+ * @param name of the partition (it's typically the mountpoint)
+ * @param fs struct with filesystem informations
+ */
 void printfs(const char *name, fsinfo fs) {
     if (strcmp(name, "/") == 0) {
         printf(COLOR_MAGENTA "FS Usage" COLOR_RESET ":       ");
@@ -71,12 +113,19 @@ void printfs(const char *name, fsinfo fs) {
     printf("]\n");
 }
 
+/**
+ * @brief Get filesystem informations 
+ * 
+ * @param path 
+ * @return fsinfo 
+ */
 fsinfo get_fs_info(const char *path) {
     struct statvfs stat;
     struct fsinfo fs_info;
 
     if (statvfs(path, &stat) != 0) {
-        fprintf(stderr, "Failed to obtain filesystem usage.\n");
+        //fprintf(stderr, "Failed to obtain filesystem usage.\n");
+        perror("Failed to obtain filesystem usage.\n");
         exit(EXIT_FAILURE);
     }
 
@@ -90,6 +139,11 @@ fsinfo get_fs_info(const char *path) {
     return fs_info;
 }
 
+/**
+ * @brief Get the filesystems mountpoint 
+ * 
+ * @return char** strings array with mountpoints
+ */
 char **get_fs_mountpoint(void) {
     char **sysfs = (char **) calloc(1, sizeof(char *));
     char filename[] = "/proc/mounts";
@@ -106,6 +160,7 @@ char **get_fs_mountpoint(void) {
         buffer[strlen(buffer)-1] = '\0';
 
         if (strstr(buffer, "/dev/sd") || strstr(buffer, "/dev/nvme") || strstr(buffer, "/dev/mmc")) {
+        //if(strstr(buffer, "/dev/nvme")) {
             char *tmp = strdup(buffer);
             char *token = strtok(tmp, " ");
 

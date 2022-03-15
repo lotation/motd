@@ -1,0 +1,133 @@
+.TH "src/motd.c" 3 "Tue Nov 2 2021" "motd" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+src/motd.c
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'motd\&.h'\fP
+.br
+\fC#include <stdio\&.h>\fP
+.br
+\fC#include <stdlib\&.h>\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBget_datetime\fP (char *time_string)"
+.br
+.RI "Get the datetime of the system\&. "
+.ti -1c
+.RI "char * \fBget_distro\fP (void)"
+.br
+.RI "Get the distro name\&. "
+.ti -1c
+.RI "void \fBprintfs\fP (const char *name, \fBfsinfo\fP fs)"
+.br
+.RI "Helps printing filesystem usage\&. "
+.ti -1c
+.RI "\fBfsinfo\fP \fBget_fs_info\fP (const char *path)"
+.br
+.RI "Get filesystem informations\&. "
+.ti -1c
+.RI "char ** \fBget_fs_mountpoint\fP (void)"
+.br
+.RI "Get the filesystems mountpoint\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.PP
+\fBAuthor\fP
+.RS 4
+lotation (xlapsiu@gmail.com) 
+.RE
+.PP
+\fBVersion\fP
+.RS 4
+0\&.1 
+.RE
+.PP
+\fBDate\fP
+.RS 4
+2021-11-02
+.RE
+.PP
+.SH "LICENSE"
+.PP
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version\&.
+.PP
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&. See the GNU General Public License for more details at https://www.gnu.org/copyleft/gpl.html
+.SH "DESCRIPTION"
+.PP
+This file has motd function definition 
+.SH "Function Documentation"
+.PP 
+.SS "void get_datetime (char * time_string)"
+
+.PP
+Get the datetime of the system\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fItime_string\fP formatted string with datetime to display in the first row 
+.RE
+.PP
+
+.SS "char * get_distro (void)"
+
+.PP
+Get the distro name\&. 
+.PP
+\fBReturns\fP
+.RS 4
+char* name of the distro 
+.RE
+.PP
+
+.SS "\fBfsinfo\fP get_fs_info (const char * path)"
+
+.PP
+Get filesystem informations\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+fsinfo 
+.RE
+.PP
+
+.SS "char ** get_fs_mountpoint (void)"
+
+.PP
+Get the filesystems mountpoint\&. 
+.PP
+\fBReturns\fP
+.RS 4
+char** strings array with mountpoints 
+.RE
+.PP
+
+.SS "void printfs (const char * name, \fBfsinfo\fP fs)"
+
+.PP
+Helps printing filesystem usage\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIname\fP of the partition (it's typically the mountpoint) 
+.br
+\fIfs\fP struct with filesystem informations 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for motd from the source code\&.

@@ -1,25 +1,36 @@
 CC = gcc
-CFLAGS = -Wall -Werror -O3
+LD = ld
+CFLAGS = -Wall -Werror -lalpm -O3
 RM = rm
 RMFLAGS = -f
+
+SOURCEDIR = src
+HEADERDIR = lib
+BINDIR = bin
+TARGET = $(BINDIR)/motd
+SRC = $(wildcard $(SOURCEDIR)/*.c)
 
 ifeq ($(PREFIX),)
     PREFIX := /usr/local
 endif
 
+.PHONY: all clean
+
 default: all
 
-all: bin/motd
+all: $(TARGET)
 
-bin/motd: src/main.c src/motd.c src/pipe.c
-	$(CC) $(CFLAGS) -o bin/motd src/main.c src/motd.c src/pipe.c
+$(TARGET): $(SRC) | $(BINDIR)
+	$(CC) $(CFLAGS) -I$(HEADERDIR) -o $(TARGET) -g $(SRC)
 
-install: bin/motd
-	install -m 755 bin/motd $(PREFIX)/bin
+$(BINDIR):
+	mkdir -p $@
+
+install: $(TARGET)
+	install -m 755 $(TARGET) $(PREFIX)/$(BINDIR)
 
 clean veryclean:
-	$(RM) $(RMFLAGS) bin/motd
+	$(RM) $(RMFLAGS) $(TARGET)
 
 uninstall:
-	$(RM) $(RMFLAGS) $(PREFIX)/bin/motd    
-
+	$(RM) $(RMFLAGS) $(PREFIX)/$(TARGET) 
