@@ -1,57 +1,41 @@
-/**
- * @file packages.c
- * @author lotation
- * @brief 
- * @version 0.2
- * @date 2022-03-15
- * 
- * @section LICENSE
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of
- * the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * General Public License for more details at
- * https://www.gnu.org/copyleft/gpl.html
- *
- * @section DESCRIPTION
- *
- * This file implements some pacman functionalities using alpm library 
- */
-#include <alpm.h>
+#include "packages.h"
 
-#include "motd.h"
+alpm_errno_t err;
+alpm_handle_t *handle;
+alpm_db_t *local_db;
 
-/**
- * @brief Get the number of installed pacman packages
- * 
- * @return int packages number
- */
-int pkgs_num(void) {
+int get_locality(alpm_pkg_t *pkg)
+{
+    const char *pkgname = alpm_pkg_get_name(pkg);
+    alpm_list_t *i;
+    alpm_list_t *sync_dbs = alpm_get_syncdbs(handle);
 
-    alpm_errno_t err;
-    alpm_handle_t *handle = alpm_initialize("/", "/var/lib/pacman", &err);
-
-    alpm_db_t *db = alpm_get_localdb(handle);
-
-    alpm_list_t *pkgs = alpm_db_get_pkgcache(db);
-
-    size_t n_pkgs = alpm_list_count(pkgs);
-
-    alpm_release(handle);
-    
-    return (int) n_pkgs;
+    for (i = sync_dbs; i != NULL; i = alpm_list_next(i)) {
+        if (alpm_db_get_pkg(i->data, pkgname)) {
+            return NATIVE;
+        }
+    }
+    return FOREIGN;
 }
 
-/**
- * @brief Get foreign packages installed using the AUR or manually
- * 
- * @return int packages number
- */
-int aur_pkgs_num(void) {
-    // TODO
+int pkgs_num(int locality)
+{
+    handle = alpm_initialize("/", "/var/lib/pacman", &err);
+    local_db = alpm_get_localdb(handle);
+
+    int packages = 0;
+    alpm_list_t *i;
+    alpm_pkg_t *pkg = NULL;
+
+    for(i = alpm_db_get_pkgcache(local_db); i != NULL; i = alpm_list_next(i)) {
+        pkg = i->data;
+
+        /* check if packages is in local_db */
+        if(locality != get_locality(pkg))
+            packages++;
+    }
+
+    alpm_release(handle);
+
+    return packages;
 }

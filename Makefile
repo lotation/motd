@@ -1,36 +1,63 @@
+# Compiler and Linker
 CC = gcc
-LD = ld
-CFLAGS = -Wall -Werror -lalpm -O3
-RM = rm
-RMFLAGS = -f
 
-SOURCEDIR = src
-HEADERDIR = lib
-BINDIR = bin
-TARGET = $(BINDIR)/motd
-SRC = $(wildcard $(SOURCEDIR)/*.c)
+# The Target Binary Program
+TARGET = motd
+
+# Directories, Source, Includes, Objects and Binary
+SRCDIR = src
+INCDIR = lib
+BUILDDIR  = obj
+TARGETDIR = bin
+
+# Flags, Libraries and Includes
+CFLAGS = -Ofast
+LIB    = -lalpm -lcurl
+INC    = -I $(INCDIR)
+
+SOURCES = $(shell find $(SRCDIR) -type f -name *.c)
+OBJECTS = $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.c=.o))
+
+RM = rm
+RMFLAGS = -rf
 
 ifeq ($(PREFIX),)
     PREFIX := /usr/local
 endif
 
-.PHONY: all clean
+# Defauilt Make
+all: directories $(TARGET)
 
-default: all
+# Remake
+remake: cleaner all
 
-all: $(TARGET)
+# Make the Directories
+directories:
+	@mkdir -p $(TARGETDIR)
+	@mkdir -p $(BUILDDIR)
 
-$(TARGET): $(SRC) | $(BINDIR)
-	$(CC) $(CFLAGS) -I$(HEADERDIR) -o $(TARGET) -g $(SRC)
+# Clean only Objecst
+clean:
+	@$(RM) $(RMFLAGS) $(BUILDDIR)
 
-$(BINDIR):
-	mkdir -p $@
+# Full Clean, Objects and Binaries
+cleaner: clean
+	@$(RM) $(RMFLAGS) $(TARGETDIR)
 
-install: $(TARGET)
-	install -m 755 $(TARGET) $(PREFIX)/$(BINDIR)
+# Link
+$(TARGET): $(OBJECTS)
+	$(CC) -o $(TARGETDIR)/$(TARGET) $^ $(LIB)
 
-clean veryclean:
-	$(RM) $(RMFLAGS) $(TARGET)
+# Compile
+$(BUILDDIR)/%.o: $(SRCDIR)/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) $(INC) -c -o $@ $<
+
+install: $(TARGETDIR)/$(TARGET)
+	install -m 755 $(TARGETDIR)/$(TARGET) $(PREFIX)/$(TARGETDIR)/$(TARGET)
 
 uninstall:
-	$(RM) $(RMFLAGS) $(PREFIX)/$(TARGET) 
+	$(RM) $(RMFLAGS) $(PREFIX)/$(TARGETDIR)/$(TARGET)
+
+# Non-File Targets
+.PHONY: all remake clean cleaner

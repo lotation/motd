@@ -1,25 +1,26 @@
-# WIP
 # Maintainer: lotation <xlapsiu@gmail.com>
 
-pkgname=
+pkgname=cmotd
 pkgver=0.1
 pkgrel=1
-pkgdesc=""
-arch=('')
-url="https://github.com/lotation/motd/"
-license=('GPL')
-depends=('lsb-release' 'pacman-contrib' 'perl-checkupdates-aur' 'fortune-mod')
+pkgdesc="Simple MOTD tool written in C"
+arch=('x86_64')
+url="https://gitlab.com/lotation/motd/"
+license=('GPL3')
+makedepends=('git')
+depends=('lsb-release' 'curl')
 provides=($_pkgname)
 conflicts=($_pkgname)
 options=('!strip' '!emptydirs')
-source=("")
-sha256sums=('')
+source=("${pkgname}::git+https://gitlab.com/lotation/motd#branch=main")
+sha256sums=('SKIP')
 
 build() {
-    
+    cd ${srcdir}/${_pkgname}
 }
 
 package() {
+    cd $srcdir/$pkgname
 
-    make DESTDIR="$pkgdir" install
+    install -D -m 755 cmotd $pkgdir/usr/local/bin/$pkgname
 }

@@ -1,38 +1,10 @@
-/**
- * @file main.c
- * @author lotation
- * @brief 
- * @version 0.2
- * @date 2022-03-15
- * 
- * @section LICENSE
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of
- * the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * General Public License for more details at
- * https://www.gnu.org/copyleft/gpl.html
- *
- * @section DESCRIPTION
- *
- * Main file
- * 
- */
-
 #include "motd.h"
+#include "ip.h"
+#include "packages.h"
 
-/**
- * @brief Call sub-functions and exit
- * 
- * @return int 
- */
-int main(void) {
 
+int main(void)
+{
     greeting();
     sysinfo();
     fsuse();
@@ -41,16 +13,11 @@ int main(void) {
     return 0;
 }
 
-/**
- * @brief prints datetime and greeting message
- * 
- */
-void greeting(void) {
-    char *username;
-    char *time_string = (char *) calloc(STR_SIZE, sizeof(char));  MCHECK(time_string)
-
-    get_datetime(time_string);
-    username = getlogin();
+void greeting(void)
+{
+    /* char *username = getlogin(); */
+    char *username = getenv("USER");
+    char *time_string = get_datetime();
 
     printf("%s\n\n", time_string);
     printf("Welcome back, " COLOR_MAGENTA "%s" COLOR_RESET "\n\n", username);
@@ -58,70 +25,72 @@ void greeting(void) {
     free(time_string);
 }
 
-/**
- * @brief Print system informations: kernel, distro, packages number
- * 
- */
-void sysinfo(void) {
+
+void sysinfo(void)
+{
     struct utsname info;
     uname(&info);
 
     char *kernel = info.release;
     char *distro = get_distro();
 
-    // Badly written attempt to mimic the bash pipe
-    int pkgs     = pkgs_num(); //atoi(pipe_of("pacman -Q", "wc -l", BSIZE));
-    int aur_pkgs = aur_pkgs_num(); //atoi(pipe_of("pacman -Qm", "wc -l", BSIZE));
-    //int upgrades     = atoi(pipe_of("checkupdates", "wc -l", BSIZE));
-    //int aur_upgrades = atoi(pipe_of("checkupdates-aur", "wc -l", BSIZE));
+    // IP address + hostname
+    char *public = get_public_ip();
+    net_info *local = get_local_ip();
 
-
-    printf(COLOR_MAGENTA "Distro" COLOR_RESET ":\t \t %s\n", distro);
-    printf(COLOR_MAGENTA "Kernel" COLOR_RESET ":\t \t %s\n", kernel);
-    
-    printf(COLOR_MAGENTA "Packages" COLOR_RESET":\t %d\tpacman\n", pkgs);
-    printf(                                   "\t\t %d\tAUR\n", aur_pkgs);
+    // Badly written attempt to mimic pacman
+    int pkgs     = pkgs_num(NATIVE);
+    int aur_pkgs = pkgs_num(FOREIGN);
 
     /*
+    int upgrades     = atoi(pipe_of("checkupdates", "wc -l", BSIZE));
+    int aur_upgrades = atoi(pipe_of("checkupdates-aur", "wc -l", BSIZE));
+
     if (upgrades > 0) {
         printf(COLOR_MAGENTA "Packages" COLOR_RESET":\t %d\t(" COLOR_MAGENTA "%d" COLOR_RESET " upgradable)\tpacman\n", pkgs, upgrades);
     } else {
         printf(COLOR_MAGENTA "Packages" COLOR_RESET":\t %d pacman\n", pkgs);
     }
     if (aur_upgrades > 0) {
-        printf(                                   "\t\t %d\t(" COLOR_MAGENTA "%d" COLOR_RESET " upgradable)\tAUR\n", aur_pkgs, aur_upgrades);
+        printf("\t\t\t %d\t(" COLOR_MAGENTA "%d" COLOR_RESET " upgradable)\tAUR\n", aur_pkgs, aur_upgrades);
     } else {
-        printf(                                   "\t\t %d AUR\n", aur_pkgs);
+        printf("\t\t\t %d AUR\n", aur_pkgs);
     }
     */
 
+    printf(COLOR_MAGENTA "Distro" COLOR_RESET ":\t \t %s\n", distro);
+    printf(COLOR_MAGENTA "Kernel" COLOR_RESET ":\t \t %s\n", kernel);
+    printf(COLOR_MAGENTA "Hostname" COLOR_RESET ":\t\t%s\n", local->host);
+    printf(COLOR_MAGENTA "IP Address" COLOR_RESET ":\t\t%s\t(%s)\n", local->ip, public);
+    printf(COLOR_MAGENTA "Packages" COLOR_RESET":\t %hu pacman\n", pkgs);
+    printf("\t\t\t %hu AUR\n", aur_pkgs);
     printf("\n");
 
     free(distro);
+    free(public);
+    free(local);
 }
 
-/**
- * @brief Get and print filesystem usage
- * 
- */
-void fsuse(void) {
+
+void fsuse(void)
+{
     // Grep info on the filesystems
     char **system_fs = get_fs_mountpoint();
-    
-    for (int i = 0; system_fs[i] != NULL; i++) {
-        struct fsinfo fs_info = get_fs_info(system_fs[i]);
 
-        printfs(system_fs[i], fs_info);
+    printf(COLOR_MAGENTA "Filesystem Usage" COLOR_RESET ":\n");
+    for (int i = 0; system_fs[i] != NULL; i++) {
+        fs_info fsinfo = get_fs_info(system_fs[i]);
+
+        printf("%s\n", print_fs(system_fs[i], fsinfo));
     }
 }
 
-/**
- * @brief Goodbye message: wiki remainder and last login
- * 
- */
-void goodbye(void) {
-    printf("\n\n\n");
+void goodbye(void)
+{
+    printf("\n\n");
+
     printf("Remember the bible: " COLOR_MAGENTA "https://wiki.archlinux.org/" COLOR_RESET "\n\n");
+
     // TODO
-    // ssh-like last login info
+    // ssh-like last login
 }
