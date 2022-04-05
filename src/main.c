@@ -1,6 +1,6 @@
 #include "motd.h"
 #include "ip.h"
-#include "packages.h"
+#include "pkg.h"
 
 
 int main(void)
@@ -60,10 +60,10 @@ void sysinfo(void)
 
     printf(COLOR_MAGENTA "Distro" COLOR_RESET ":\t \t %s\n", distro);
     printf(COLOR_MAGENTA "Kernel" COLOR_RESET ":\t \t %s\n", kernel);
-    printf(COLOR_MAGENTA "Hostname" COLOR_RESET ":\t\t%s\n", local->host);
-    printf(COLOR_MAGENTA "IP Address" COLOR_RESET ":\t\t%s\t(%s)\n", local->ip, public);
-    printf(COLOR_MAGENTA "Packages" COLOR_RESET":\t %hu pacman\n", pkgs);
-    printf("\t\t\t %hu AUR\n", aur_pkgs);
+    printf(COLOR_MAGENTA "Hostname" COLOR_RESET ":\t%s\n", local->host);
+    printf(COLOR_MAGENTA "IP Address" COLOR_RESET ":\t%s\t(%s)\n", local->ip, public);
+    printf(COLOR_MAGENTA "Packages" COLOR_RESET":\t %d pacman\n", pkgs);
+    printf("\t\t\t %d AUR\n", aur_pkgs);
     printf("\n");
 
     free(distro);
