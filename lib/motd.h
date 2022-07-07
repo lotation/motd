@@ -7,12 +7,13 @@
 #include <time.h>          // time utilities
 
 #include <unistd.h>        // POSIX API
+#include <sys/sysinfo.h>   // system uptime
 #include <sys/statvfs.h>   // filesystem stats
 #include <sys/utsname.h>   // system relese, version, etc
 #include <sys/wait.h>      // wait, waitpid
 
 #define STR_SIZE  80  // => length of time_string
-#define DISTRO    40  // => max line length of /etc/lsb-release
+#define DISTRO    64  // => max line length of /etc/os-release
 #define LINE     192  // => max line length of /proc/mounts
 #define MAX_NAME   8  // => max name length
 
@@ -40,7 +41,7 @@ typedef struct __dirlist_t {
 } dirlist_t;
 
 void greeting(void);
-void sysinfo(void);
+void systeminfo(void);
 void fsuse(void);
 void goodbye(void);
 
@@ -53,6 +54,7 @@ void strsplit(char *str, char *str_arr[]);
 fsinfo_t get_fs_info(const char *path);
 char *print_fs(const char *name, fsinfo_t fs);
 char **get_fs_mountpoint(void);
+char *get_uptime(void);
 
 
 #endif

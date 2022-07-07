@@ -1,3 +1,7 @@
 .idea
 bin
 obj
+
+gmon.out
+**/.nvimlog
+**/*.old

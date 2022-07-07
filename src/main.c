@@ -1,12 +1,11 @@
 #include "motd.h"
 #include "ip.h"
-#include "packages.h"
-
+#include "pkg.h"
 
 int main(void)
 {
     greeting();
-    sysinfo();
+    systeminfo();
     fsuse();
     goodbye();
     
@@ -26,7 +25,7 @@ void greeting(void)
 }
 
 
-void sysinfo(void)
+void systeminfo(void)
 {
     struct utsname info;
     uname(&info);
@@ -34,13 +33,28 @@ void sysinfo(void)
     char *kernel = info.release;
     char *distro = get_distro();
 
+    // System load
+    // CPU
+    // MEM
+    // ...
+
     // IP address + hostname
+    char *ip_addr;
     char *public = get_public_ip();
     net_info *local = get_local_ip();
 
+    if (strncmp(local->ip, "127", 3 * sizeof(char)) == 0) {
+        ip_addr = strdup(public);
+    } else {
+        ip_addr = (char *) calloc(IP_STR, sizeof(char));
+        MCHECK(ip_addr);
+
+        snprintf(ip_addr, IP_STR, "%s    (%s)", local->ip, public);
+    }
+
     // Badly written attempt to mimic pacman
-    int pkgs     = pkgs_num(NATIVE);
-    int aur_pkgs = pkgs_num(FOREIGN);
+    int pkgs     = get_pkg_num(NATIVE);
+    int aur_pkgs = get_pkg_num(FOREIGN);
 
     /*
     int upgrades     = atoi(pipe_of("checkupdates", "wc -l", BSIZE));
@@ -60,15 +74,16 @@ void sysinfo(void)
 
     printf(COLOR_MAGENTA "Distro" COLOR_RESET ":\t \t %s\n", distro);
     printf(COLOR_MAGENTA "Kernel" COLOR_RESET ":\t \t %s\n", kernel);
-    printf(COLOR_MAGENTA "Hostname" COLOR_RESET ":\t\t%s\n", local->host);
-    printf(COLOR_MAGENTA "IP Address" COLOR_RESET ":\t\t%s\t(%s)\n", local->ip, public);
-    printf(COLOR_MAGENTA "Packages" COLOR_RESET":\t %hu pacman\n", pkgs);
-    printf("\t\t\t %hu AUR\n", aur_pkgs);
+    printf(COLOR_MAGENTA "Hostname" COLOR_RESET ":\t %s\n", local->host);
+    printf(COLOR_MAGENTA "IP Address" COLOR_RESET ":\t %s\n", ip_addr);
+    printf(COLOR_MAGENTA "Packages" COLOR_RESET":\t %d pacman\n", pkgs);
+    printf("\t\t\t %d AUR\n", aur_pkgs);
     printf("\n");
 
     free(distro);
     free(public);
     free(local);
+    free(ip_addr);
 }
 
 
@@ -89,6 +104,7 @@ void goodbye(void)
 {
     printf("\n\n");
 
+    char *docs = get_documentation();
     printf("Remember the bible: " COLOR_MAGENTA "https://wiki.archlinux.org/" COLOR_RESET "\n\n");
 
     // TODO

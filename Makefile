@@ -11,7 +11,7 @@ BUILDDIR  = obj
 TARGETDIR = bin
 
 # Flags, Libraries and Includes
-# SANITZE = -fsanitize=address,leak,alignment
+SANITZE = -fsanitize=address,leak,alignment
 # CFLAGS  = -O3 -march=native -ffast-math
 CFLAGS  = -Wall -Wextra -Werror -pedantic -Og $(SANITZE) -funroll-loops -fomit-frame-pointer -g3
 LDFLAGS = $(SANITZE)
