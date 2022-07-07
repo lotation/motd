@@ -23,9 +23,14 @@ char *get_datetime(void)
 
 char *get_distro(void)
 {
-    char filename[] = "/etc/lsb-release";
-    char *name = (char *) calloc(1, sizeof(char));
+    char filename[] = "/etc/os-release";
+
+    char *distro = (char *) calloc(1, sizeof(char));
+    MCHECK(distro);
+    char *id = (char *) calloc(1, sizeof(char));
+    MCHECK(id);
     char *buffer = (char *) calloc(DISTRO, sizeof(char));
+    MCHECK(buffer);
 
     FILE *fp;
     fp = fopen(filename, "r");
@@ -34,28 +39,58 @@ char *get_distro(void)
         exit(EXIT_FAILURE);
     }
 
+    char *tmp, *token;
+
     while (fgets(buffer, DISTRO, fp)) {
         // Remove the new line
         buffer[strlen(buffer) - 1] = '\0';
 
-        if (strstr(buffer, "DESCRIPTION")) {
-            char *tmp = strdup(buffer);
-            char *token = strtok(tmp, "=");
+        if (strstr(buffer, "PRETTY_NAME") ||
+                strstr(buffer, "NAME"))
+        {
+            tmp = strdup(buffer);
+            token = strtok(tmp, "=");
 
             token = strtok(NULL, "\"");
 
-            // Save distro name
-            name = (char *) realloc(name, (strlen(token) + 1) * sizeof(char));
-            strcpy(name, token);
+            // Save distro distro
+            distro = (char *) realloc(distro, (strlen(token) + 1) * sizeof(char));
+            strcpy(distro, token);
 
             free(tmp);
         }
+
+        if (strstr(buffer, "BUILD_ID") ||
+                strstr(buffer, "VERSION"))
+        {
+            tmp = strdup(buffer);
+            token = strtok(tmp, "=");
+
+            token = strtok(NULL, "\"");
+
+            // Save distro distro
+            id = (char *) realloc(id, (strlen(token) + 1) * sizeof(char));
+            strcpy(id, token);
+
+            free(tmp);
+        }
+
+        //
+        // DOCUMENTATION_URL
+        //
+
     }
 
-    free(buffer);
+    if (strlen(distro) == 0) {
+        distro = strdup("Unknown");
+    }
+
+    snprintf(buffer, DISTRO, "%s (%s)", distro, id);
+
+    //free(buffer);
     fclose(fp);
 
-    return name;
+    return buffer;
 }
 
 char *print_fs(const char *name, fs_info fs)
@@ -66,7 +101,7 @@ char *print_fs(const char *name, fs_info fs)
     spacing[0] = '\t';
 
     if (strcmp(name, "/") == 0) {
-        strcat(spacing, "\t\t");
+        strcat(spacing, "\t\t\t\t");
     } else if (strlen(name) < MAX_NAME) {
         strcat(spacing, "\t");
     }
@@ -145,6 +180,55 @@ char **get_fs_mountpoint(void)
     return sysfs;
 }
 
+char *get_uptime(void)
+{
+    long ut;
+    long sec, min, hour, days;
+    char *uptime = (char *) calloc(STR_SIZE, sizeof(char));
+
+    struct sysinfo info;
+    sysinfo(&info);
+    ut = info.uptime;
+
+    if (ut >= 0 && ut < 60) {
+        sec = ut;
+        snprintf(uptime, STR_SIZE, "%ld sec\n", sec);
+    }
+    else if (ut >= 60 && ut < 3600) {
+        min = ut / 60;
+        sec = ut - min*60;
+        snprintf(uptime, STR_SIZE, "%ld min, %ld sec\n", min, sec);
+    }
+    else if (ut >= 3600 && ut < 86400) {
+        hour = ut / 3600;
+        min = (ut - hour*3600) / 60;
+        ut -= hour*3600;
+        sec = ut - min*60;
+        snprintf( uptime, STR_SIZE, "%ld hours, %ld min, %ld sec\n", hour, min, sec);
+    }
+    else if (ut >= 86400) {
+        days = ut / 86400;
+        hour = (ut - days*86400) / 3600;
+        ut -= days*86400;
+        min = (ut - hour*3600) / 60;
+        ut -= hour*3600;
+        sec = ut - min*60;
+        snprintf(uptime, STR_SIZE, "%ld days, %ld hours, %ld min, %ld sec\n", days, hour, min, sec);
+    }
+    else {
+        /* */
+    }
+
+    uptime = (char *) realloc(uptime, (strlen(uptime) + 1) * sizeof(char));
+
+    return uptime;
+}
+
+/*
+int get_sysload(void) {
+    int load = getloadavg();
+}
+*/
 void strsplit(char *str, char *str_arr[]) {
     char *token = strtok(str, " ");
     int i;

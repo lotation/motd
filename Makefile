@@ -11,8 +11,8 @@ BUILDDIR  = obj
 TARGETDIR = bin
 
 # Flags, Libraries and Includes
-CFLAGS = -Ofast
-LIB    = -lalpm -lcurl
+CFLAGS = -Wall -Wextra -Werror -Og -g
+LIB    = -lpacutils -lalpm -lcurl
 INC    = -I $(INCDIR)
 
 SOURCES = $(shell find $(SRCDIR) -type f -name *.c)

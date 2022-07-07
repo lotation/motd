@@ -7,7 +7,6 @@ size_t write_mem_callback(void *contents, size_t size, size_t nmemb, void *userp
     mem_struct *mem = (mem_struct *)userp;
 
     char *ptr = realloc(mem->memory, mem->size + realsize + 1);
-
     if (ptr == NULL) {
         fprintf(stderr, "Not enough memory (realloc returned NULL)\n");
         exit(EXIT_FAILURE);
@@ -36,20 +35,20 @@ net_info *get_local_ip(void)
     /* Retrieve hostname */
     hostname = gethostname(host_buffer, MAX_HOST);
     if (hostname == -1) {
-        perror("gethostname failed ");
+        perror("gethostname ");
         exit(EXIT_FAILURE);
     }
 
     netinfo->host = strdup(host_buffer);
     if (netinfo->host == NULL) {
-        perror("strdup failed ");
+        perror("strdup ");
         exit(EXIT_FAILURE);
     }
 
     /* Retrieve host information */
     host_entry = gethostbyname(netinfo->host);
     if (host_entry == NULL) {
-        perror("gethostbyname failed ");
+        perror("gethostbyname ");
         exit(EXIT_FAILURE);
     }
 
@@ -57,7 +56,7 @@ net_info *get_local_ip(void)
     netinfo->ip = inet_ntoa(*((struct in_addr*)
                            host_entry->h_addr_list[0]));
     if (netinfo->ip == NULL) {
-        perror("inet_ntoa failed ");
+        perror("inet_ntoa ");
         exit(EXIT_FAILURE);
     }
 
