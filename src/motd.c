@@ -58,7 +58,7 @@ char *get_distro(void)
     return name;
 }
 
-char *print_fs(const char *name, fs_info fs)
+char *print_fs(const char *name, fsinfo_t fs)
 {
     char *res = (char *) calloc(STR_SIZE, sizeof(char));
     MCHECK(res);
@@ -85,10 +85,10 @@ char *print_fs(const char *name, fs_info fs)
     return (char *) realloc(res, (strlen(res) + 1) * sizeof(char));
 }
 
-fs_info get_fs_info(const char *path)
+fsinfo_t get_fs_info(const char *path)
 {
     struct statvfs stat;
-    fs_info fsinfo;
+    fsinfo_t fsinfo;
 
     if (statvfs(path, &stat) != 0) {
         fprintf(stderr, "Failed to obtain filesystem usage.\n");

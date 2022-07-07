@@ -23,7 +23,7 @@ size_t write_mem_callback(void *contents, size_t size, size_t nmemb, void *userp
 
 net_info *get_local_ip(void)
 {
-    net_info *netinfo = (net_info *) calloc(1, sizeof(netinfo));
+    net_info *netinfo = (net_info *) calloc(1, sizeof(net_info));
     if (netinfo == NULL) {
         fprintf(stderr, "Could not allocate memory.\n");
         exit(EXIT_FAILURE);

@@ -11,9 +11,12 @@ BUILDDIR  = obj
 TARGETDIR = bin
 
 # Flags, Libraries and Includes
-CFLAGS = -Ofast
-LIB    = -lalpm -lcurl
-INC    = -I $(INCDIR)
+# SANITZE = -fsanitize=address,leak,alignment
+# CFLAGS  = -O3 -march=native -ffast-math
+CFLAGS  = -Wall -Wextra -Werror -pedantic -Og $(SANITZE) -funroll-loops -fomit-frame-pointer -g3
+LDFLAGS = $(SANITZE)
+LIB     = -lalpm -lcurl
+INC     = -I $(INCDIR)
 
 SOURCES = $(shell find $(SRCDIR) -type f -name *.c)
 OBJECTS = $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.c=.o))
@@ -24,6 +27,7 @@ RMFLAGS = -rf
 ifeq ($(PREFIX),)
     PREFIX := /usr/local
 endif
+
 
 # Defauilt Make
 all: directories $(TARGET)
@@ -46,7 +50,7 @@ cleaner: clean
 
 # Link
 $(TARGET): $(OBJECTS)
-	$(CC) -o $(TARGETDIR)/$(TARGET) $^ $(LIB)
+	$(CC) $(LDFLAGS) -o $(TARGETDIR)/$(TARGET) $^ $(LIB)
 
 # Compile
 $(BUILDDIR)/%.o: $(SRCDIR)/%.c

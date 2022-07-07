@@ -3,7 +3,6 @@
 
 #include <stdio.h>         // basic I/O
 #include <stdlib.h>        // malloc, free, exit
-#include <stdbool.h>       // true, false, bool type
 #include <string.h>        // strings utils
 #include <time.h>          // time utilities
 
@@ -26,13 +25,19 @@
                     }
 
 
-typedef struct fsinfo_ {
+typedef struct __fsinfo_t {
     double total;
     double free;
     double used;
     double free_percent;
     double used_percent;
-} fs_info;
+} fsinfo_t;
+
+typedef struct __dirlist_t {
+    size_t index;
+    size_t size;
+    char **field;
+} dirlist_t;
 
 void greeting(void);
 void sysinfo(void);
@@ -45,8 +50,8 @@ char *get_distro(void);
 char *pipe_of(const char op1[], const char op2[], int buffer_size);
 void strsplit(char *str, char *str_arr[]);
 
-fs_info get_fs_info(const char *path);
-char *print_fs(const char *name, fs_info fs);
+fsinfo_t get_fs_info(const char *path);
+char *print_fs(const char *name, fsinfo_t fs);
 char **get_fs_mountpoint(void);
 
 

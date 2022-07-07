@@ -79,7 +79,7 @@ void fsuse(void)
 
     printf(COLOR_MAGENTA "Filesystem Usage" COLOR_RESET ":\n");
     for (int i = 0; system_fs[i] != NULL; i++) {
-        fs_info fsinfo = get_fs_info(system_fs[i]);
+        fsinfo_t fsinfo = get_fs_info(system_fs[i]);
 
         printf("%s\n", print_fs(system_fs[i], fsinfo));
     }
