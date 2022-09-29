@@ -1,7 +1,7 @@
 #include "ip.h"
 
 
-size_t write_mem_callback(void *contents, size_t size, size_t nmemb, void *userp)
+static size_t write_mem_callback(void *contents, size_t size, size_t nmemb, void *userp)
 {
     size_t realsize = size * nmemb;
     mem_struct *mem = (mem_struct *)userp;

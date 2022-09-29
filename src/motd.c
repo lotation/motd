@@ -1,5 +1,5 @@
 #include "motd.h"
-
+#include <linux/limits.h>
 
 char *get_datetime(void)
 {
@@ -25,10 +25,8 @@ char *get_distro(void)
 {
     char filename[] = "/etc/os-release";
 
-    char *distro = (char *) calloc(1, sizeof(char));
-    MCHECK(distro);
-    char *id = (char *) calloc(1, sizeof(char));
-    MCHECK(id);
+    char *distro = NULL;
+    char *id = NULL;
     char *buffer = (char *) calloc(DISTRO, sizeof(char));
     MCHECK(buffer);
 
@@ -54,8 +52,10 @@ char *get_distro(void)
             token = strtok(NULL, "\"");
 
             // Save distro distro
-            distro = (char *) realloc(distro, (strlen(token) + 1) * sizeof(char));
-            strcpy(distro, token);
+            // distro = (char *) calloc(strlen(token) + 1, sizeof(char));
+            // strcpy(distro, token);
+            distro = strdup(token);
+            MCHECK(distro);
 
             free(tmp);
         }
@@ -69,8 +69,9 @@ char *get_distro(void)
             token = strtok(NULL, "\"");
 
             // Save distro distro
-            id = (char *) realloc(id, (strlen(token) + 1) * sizeof(char));
-            strcpy(id, token);
+            // id = (char *) calloc(strlen(token) + 1, sizeof(char));
+            // strcpy(id, token);
+            id = strdup(token);
 
             free(tmp);
         }
@@ -97,7 +98,9 @@ char *print_fs(const char *name, fsinfo_t fs)
 {
     char *res = (char *) calloc(STR_SIZE, sizeof(char));
     MCHECK(res);
-    char spacing[MAX_NAME];
+    //char spacing[8];
+    char *spacing = (char *) calloc(MAX_NAME, sizeof(char));
+    MCHECK(spacing);
     spacing[0] = '\t';
 
     if (strcmp(name, "/") == 0) {
@@ -117,7 +120,8 @@ char *print_fs(const char *name, fsinfo_t fs)
     }
     strcat(res, "]");
 
-    return (char *) realloc(res, (strlen(res) + 1) * sizeof(char));
+    res = (char *) realloc(res, (strlen(res) + 1) * sizeof(char));
+    return res;
 }
 
 fsinfo_t get_fs_info(const char *path)
@@ -142,7 +146,8 @@ fsinfo_t get_fs_info(const char *path)
 
 char **get_fs_mountpoint(void)
 {
-    char **sysfs = (char **) calloc(1, sizeof(char *));
+    size_t size = 1;
+    char **sysfs = (char **) calloc(size, sizeof(char *));
     char filename[] = "/proc/mounts";
     char *buffer = (char *) calloc(LINE, sizeof(char));
 
@@ -164,7 +169,8 @@ char **get_fs_mountpoint(void)
             token = strtok(NULL, " ");
 
             // Add a new string
-            sysfs = (char **) realloc(sysfs, (sizeof(*sysfs) + 1) * sizeof(char *));
+            size += 1;
+            sysfs = (char **) realloc(sysfs, size * sizeof(char *));
             sysfs[i] = (char *) calloc(strlen(token) + 1, sizeof(char));
             strcpy(sysfs[i], token);
 
@@ -175,6 +181,7 @@ char **get_fs_mountpoint(void)
     // Use NULL as terminator
     sysfs[i] = NULL;
 
+    free(buffer);
     fclose(fp);
 
     return sysfs;
@@ -228,13 +235,14 @@ char *get_uptime(void)
 int get_sysload(void) {
     int load = getloadavg();
 }
-*/
-void strsplit(char *str, char *str_arr[]) {
+
+static void strsplit(char *str, char *str_arr[]) 
+{
     char *token = strtok(str, " ");
     int i;
 
-    /* For each word in str_arr (as is using space as delimiter)
-     * creates a new value in the string array and copies token in it */
+    // For each word in str_arr (as is using space as delimiter)
+    // creates a new value in the string array and copies token in it
     for (i = 0; token != NULL; i++) {
         str_arr = (char **) realloc(str_arr, (sizeof(*str_arr) + 1) * sizeof(char *));
         MCHECK(str_arr);
@@ -249,3 +257,4 @@ void strsplit(char *str, char *str_arr[]) {
     MCHECK(str_arr);
     str_arr[i] = NULL;
 }
+*/

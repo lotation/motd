@@ -2,6 +2,12 @@
 #include "ip.h"
 #include "pkg.h"
 
+
+static void greeting(void);
+static void systeminfo(void);
+static void fsuse(void);
+static void goodbye(void);
+
 int main(void)
 {
     greeting();
@@ -12,7 +18,7 @@ int main(void)
     return 0;
 }
 
-void greeting(void)
+static void greeting(void)
 {
     /* char *username = getlogin(); */
     char *username = getenv("USER");
@@ -25,7 +31,7 @@ void greeting(void)
 }
 
 
-void systeminfo(void)
+static void systeminfo(void)
 {
     struct utsname info;
     uname(&info);
@@ -49,7 +55,7 @@ void systeminfo(void)
         ip_addr = (char *) calloc(IP_STR, sizeof(char));
         MCHECK(ip_addr);
 
-        snprintf(ip_addr, IP_STR, "%s    (%s)", local->ip, public);
+        snprintf(ip_addr, IP_STR, "%s  (%s)", local->ip, public);
     }
 
     // Badly written attempt to mimic pacman
@@ -72,12 +78,11 @@ void systeminfo(void)
     }
     */
 
-    printf(COLOR_MAGENTA "Distro" COLOR_RESET ":\t \t %s\n", distro);
-    printf(COLOR_MAGENTA "Kernel" COLOR_RESET ":\t \t %s\n", kernel);
-    printf(COLOR_MAGENTA "Hostname" COLOR_RESET ":\t %s\n", local->host);
+    printf(COLOR_MAGENTA "Distro"     COLOR_RESET ":\t \t %s\n", distro);
+    printf(COLOR_MAGENTA "Kernel"     COLOR_RESET ":\t \t %s\n", kernel);
+    printf(COLOR_MAGENTA "Hostname"   COLOR_RESET ":\t %s\n", local->host);
     printf(COLOR_MAGENTA "IP Address" COLOR_RESET ":\t %s\n", ip_addr);
-    printf(COLOR_MAGENTA "Packages" COLOR_RESET":\t %d pacman\n", pkgs);
-    printf("\t\t\t %d AUR\n", aur_pkgs);
+    printf(COLOR_MAGENTA "Packages"   COLOR_RESET ":\t %d pacman  (%d AUR)\n", pkgs, aur_pkgs);
     printf("\n");
 
     free(distro);
@@ -87,7 +92,7 @@ void systeminfo(void)
 }
 
 
-void fsuse(void)
+static void fsuse(void)
 {
     // Grep info on the filesystems
     char **system_fs = get_fs_mountpoint();
@@ -100,13 +105,13 @@ void fsuse(void)
     }
 }
 
-void goodbye(void)
+static void goodbye(void)
 {
     printf("\n\n");
 
-    char *docs = get_documentation();
     printf("Remember the bible: " COLOR_MAGENTA "https://wiki.archlinux.org/" COLOR_RESET "\n\n");
 
     // TODO
+    // char *docs = get_documentation();
     // ssh-like last login
 }

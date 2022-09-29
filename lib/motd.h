@@ -1,6 +1,8 @@
 #ifndef MOTD_H
 #define MOTD_H
 
+#define _DEFAULT_SOURCE
+
 #include <stdio.h>         // basic I/O
 #include <stdlib.h>        // malloc, free, exit
 #include <string.h>        // strings utils
@@ -12,7 +14,7 @@
 #include <sys/utsname.h>   // system relese, version, etc
 #include <sys/wait.h>      // wait, waitpid
 
-#define STR_SIZE  80  // => length of time_string
+#define STR_SIZE  86  // => length of time_string
 #define DISTRO    64  // => max line length of /etc/os-release
 #define LINE     192  // => max line length of /proc/mounts
 #define MAX_NAME   8  // => max name length
@@ -40,16 +42,11 @@ typedef struct __dirlist_t {
     char **field;
 } dirlist_t;
 
-void greeting(void);
-void systeminfo(void);
-void fsuse(void);
-void goodbye(void);
-
 char *get_datetime(void);
 char *get_distro(void);
 
 char *pipe_of(const char op1[], const char op2[], int buffer_size);
-void strsplit(char *str, char *str_arr[]);
+//static void strsplit(char *str, char *str_arr[]);
 
 fsinfo_t get_fs_info(const char *path);
 char *print_fs(const char *name, fsinfo_t fs);
