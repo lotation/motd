@@ -1,5 +1,8 @@
 bin
 obj
+.kdev4
+.idea
+.vscode
 
 gmon.out
 **/.nvimlog
