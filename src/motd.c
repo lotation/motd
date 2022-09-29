@@ -16,7 +16,7 @@ char *get_datetime(void)
     time_info = localtime(&current_time);
 
     //                              " DAY NUM MON 	                       -                        	HOUR:MIN "
-    strftime(time_string, STR_SIZE, "[ %a %d %b  %t                       -                        %t %R ]", time_info);
+    strftime(time_string, STR_SIZE, "[ %a %d %b  %t                          -                           %t %R ]", time_info);
 
     return time_string;
 }
@@ -93,31 +93,35 @@ char *get_distro(void)
     return buffer;
 }
 
-char *print_fs(const char *name, fsinfo_t fs)
+void *printfs(const char *name, fsinfo_t fs)
 {
-    char *res = (char *) calloc(STR_SIZE, sizeof(char));
-    MCHECK(res);
+    char c = '=';
     char spacing[MAX_NAME];
-    spacing[0] = '\t';
+    spacing[0] = ' '; spacing[1] = '\t';
 
-    if (strcmp(name, "/") == 0) {
-        strcat(spacing, "\t\t\t\t");
-    } else if (strlen(name) < MAX_NAME) {
-        strcat(spacing, "\t");
+    //if (strcmp(name, "/") == 0) {
+    //    strcat(spacing, " \t \t");
+    //} else if (strlen(name) < MAX_NAME) {
+    //    strcat(spacing, " \t \t");
+    //}
+
+    if (strlen(name) < MAX_NAME) {
+        strcat(spacing, " \t \t \t");
     }
 
-    snprintf(res, STR_SIZE, "\t\t\t%s%s[", name, spacing);
+    int used_percent = fs.used_percent - ((int)fs.used_percent) >= 0.5 ? ((int)fs.used_percent) + 1 : ((int)fs.used_percent);
 
-    for (int i = 1; i <= 50; i++) {
-        if (i >= (fs.used_percent/2)) {
-            strcat(res, "=");
+    printf(" %s%s ", name, spacing);
+
+    for (size_t i = 1; i <= 50; i++) {
+        if (i >= (fs.used_percent / 2)) {
+            printf("%c", c);
         } else {
-            snprintf(res, STR_SIZE, "%c" COLOR_RESET, '=');
+            printf(COLOR_MAGENTA "%c" COLOR_RESET, c);
         }
     }
-    strcat(res, "]");
+    printf(" %d%%", used_percent);
 
-    return (char *) realloc(res, (strlen(res) + 1) * sizeof(char));
 }
 
 fsinfo_t get_fs_info(const char *path)

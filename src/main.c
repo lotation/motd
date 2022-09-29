@@ -49,7 +49,7 @@ void systeminfo(void)
         ip_addr = (char *) calloc(IP_STR, sizeof(char));
         MCHECK(ip_addr);
 
-        snprintf(ip_addr, IP_STR, "%s    (%s)", local->ip, public);
+        snprintf(ip_addr, IP_STR, "%s  (%s)", local->ip, public);
     }
 
     // Badly written attempt to mimic pacman
@@ -72,12 +72,11 @@ void systeminfo(void)
     }
     */
 
-    printf(COLOR_MAGENTA "Distro" COLOR_RESET ":\t \t %s\n", distro);
-    printf(COLOR_MAGENTA "Kernel" COLOR_RESET ":\t \t %s\n", kernel);
-    printf(COLOR_MAGENTA "Hostname" COLOR_RESET ":\t %s\n", local->host);
+    printf(COLOR_MAGENTA "Distro"     COLOR_RESET ":\t \t %s\n", distro);
+    printf(COLOR_MAGENTA "Kernel"     COLOR_RESET ":\t \t %s\n", kernel);
+    printf(COLOR_MAGENTA "Hostname  " COLOR_RESET ":\t %s\n", local->host);
     printf(COLOR_MAGENTA "IP Address" COLOR_RESET ":\t %s\n", ip_addr);
-    printf(COLOR_MAGENTA "Packages" COLOR_RESET":\t %d pacman\n", pkgs);
-    printf("\t\t\t %d AUR\n", aur_pkgs);
+    printf(COLOR_MAGENTA "Packages  " COLOR_RESET ":\t %d pacman  (%d AUR)\n", pkgs, aur_pkgs);
     printf("\n");
 
     free(distro);
@@ -90,13 +89,13 @@ void systeminfo(void)
 void fsuse(void)
 {
     // Grep info on the filesystems
-    char **system_fs = get_fs_mountpoint();
+    char **fs_path = get_fs_mountpoint();
 
     printf(COLOR_MAGENTA "Filesystem Usage" COLOR_RESET ":\n");
-    for (int i = 0; system_fs[i] != NULL; i++) {
-        fsinfo_t fsinfo = get_fs_info(system_fs[i]);
-
-        printf("%s\n", print_fs(system_fs[i], fsinfo));
+    for (size_t i = 0; fs_path[i] != NULL; i++) {
+        fsinfo_t fsinfo = get_fs_info(fs_path[i]);
+        printfs(fs_path[i], fsinfo);
+        putchar(10);
     }
 }
 
@@ -104,7 +103,7 @@ void goodbye(void)
 {
     printf("\n\n");
 
-    char *docs = get_documentation();
+    //char *docs = get_documentation();
     printf("Remember the bible: " COLOR_MAGENTA "https://wiki.archlinux.org/" COLOR_RESET "\n\n");
 
     // TODO

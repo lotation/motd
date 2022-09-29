@@ -11,11 +11,11 @@ BUILDDIR  = obj
 TARGETDIR = bin
 
 # Flags, Libraries and Includes
-SANITZE = -fsanitize=address,leak,alignment
-# CFLAGS  = -O3 -march=native -ffast-math
-CFLAGS  = -Wall -Wextra -Werror -pedantic -Og $(SANITZE) -funroll-loops -fomit-frame-pointer -g3
+#SANITZE = -fsanitize=address,leak,alignment
+#CFLAGS  = -Wall -Wextra -Werror -pedantic -Og $(SANITZE) -funroll-loops -fomit-frame-pointer -g3
+CFLAGS  = -g #-O3 -march=native -ffast-math
 LDFLAGS = $(SANITZE)
-LIB     = -lalpm -lcurl
+LIB     = -lalpm -lcurl -lpacutils
 INC     = -I $(INCDIR)
 
 SOURCES = $(shell find $(SRCDIR) -type f -name *.c)
