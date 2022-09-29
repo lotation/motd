@@ -1,7 +1,9 @@
-.idea
 bin
 obj
 
 gmon.out
 **/.nvimlog
 **/*.old
+**/*.idea
+**/*.kdev4
+**/*.vscode

@@ -4,7 +4,7 @@
 pu_config_t *config = NULL;
 alpm_handle_t *handle = NULL;
 
-int get_locality(alpm_pkg_t *pkg)
+static int get_locality(alpm_pkg_t *pkg)
 {
     const char *pkgname = alpm_pkg_get_name(pkg);
     alpm_list_t *i;

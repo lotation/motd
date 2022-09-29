@@ -2,6 +2,12 @@
 #include "ip.h"
 #include "pkg.h"
 
+
+static void greeting(void);
+static void systeminfo(void);
+static void fsuse(void);
+static void goodbye(void);
+
 int main(void)
 {
     greeting();
@@ -12,7 +18,7 @@ int main(void)
     return 0;
 }
 
-void greeting(void)
+static void greeting(void)
 {
     /* char *username = getlogin(); */
     char *username = getenv("USER");
@@ -25,7 +31,7 @@ void greeting(void)
 }
 
 
-void systeminfo(void)
+static void systeminfo(void)
 {
     struct utsname info;
     uname(&info);
@@ -86,7 +92,7 @@ void systeminfo(void)
 }
 
 
-void fsuse(void)
+static void fsuse(void)
 {
     // Grep info on the filesystems
     char **fs_path = get_fs_mountpoint();
@@ -99,7 +105,7 @@ void fsuse(void)
     }
 }
 
-void goodbye(void)
+static void goodbye(void)
 {
     printf("\n\n");
 

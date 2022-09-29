@@ -25,7 +25,7 @@ typedef struct net_info_ {
     char *ip;
 } net_info;
 
-size_t write_mem_callback(void *contents, size_t size, size_t nmemb, void *userp);
+//size_t write_mem_callback(void *contents, size_t size, size_t nmemb, void *userp);
 net_info *get_local_ip(void);
 char *get_public_ip(void);
 

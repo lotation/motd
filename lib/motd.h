@@ -42,16 +42,11 @@ typedef struct __dirlist_t {
     char **field;
 } dirlist_t;
 
-void greeting(void);
-void systeminfo(void);
-void fsuse(void);
-void goodbye(void);
-
 char *get_datetime(void);
 char *get_distro(void);
 
 char *pipe_of(const char op1[], const char op2[], int buffer_size);
-void strsplit(char *str, char *str_arr[]);
+//static void strsplit(char *str, char *str_arr[]);
 
 fsinfo_t get_fs_info(const char *path);
 void* printfs(const char* name, fsinfo_t fs);
