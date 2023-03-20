@@ -94,7 +94,7 @@ char *get_distro(void)
     return buffer;
 }
 
-void *printfs(const char *name, fsinfo_t fs)
+void printfs(const char *name, fsinfo_t fs)
 {
     char c = '=';
     char spacing[MAX_NAME];

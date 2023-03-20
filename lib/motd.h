@@ -17,7 +17,7 @@
 #define STR_SIZE  86  // => length of time_string
 #define DISTRO    64  // => max line length of /etc/os-release
 #define LINE     192  // => max line length of /proc/mounts
-#define MAX_NAME   8  // => max name length
+#define MAX_NAME   9  // => max name length
 
 #define COLOR_MAGENTA "\033[38;5;197m"
 #define COLOR_RESET   "\033[0m" //"\x1b[0m"
@@ -49,7 +49,7 @@ char *pipe_of(const char op1[], const char op2[], int buffer_size);
 //static void strsplit(char *str, char *str_arr[]);
 
 fsinfo_t get_fs_info(const char *path);
-void* printfs(const char* name, fsinfo_t fs);
+void printfs(const char* name, fsinfo_t fs);
 char **get_fs_mountpoint(void);
 char *get_uptime(void);
 
