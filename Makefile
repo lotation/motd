@@ -14,7 +14,7 @@ TARGETDIR = bin
 # SANITZE = -fsanitize=address,leak,alignment
 # CFLAGS  = -O3 -march=native -ffast-math
 # CFLAGS  = -Wall -Wextra -Werror -pedantic -Wl,-dead_strip -Og $(SANITZE) -funroll-loops -fomit-frame-pointer -g3
-CFLAGS = -Wall -Wextra -Werror -pedantic -g
+CFLAGS  = -Wall -Wextra -Werror -Wformat=2 -pedantic -g
 LDFLAGS = $(SANITZE)
 LIB     = -lalpm -lpacutils -lcurl 
 INC     = -I $(INCDIR)
