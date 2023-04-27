@@ -1,8 +1,6 @@
 #ifndef PKG_H
 #define PKG_H
 
-#include <pacutils.h>
-
 #define NATIVE  0
 #define FOREIGN 1
 

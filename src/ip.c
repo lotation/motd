@@ -1,16 +1,24 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <errno.h>
+
+#include <netdb.h>
+#include <arpa/inet.h>
+#include <curl/curl.h>
+
 #include "ip.h"
 
+static size_t write_mem_callback(void *contents, size_t size, size_t nmemb, void *userp);
 
 static size_t write_mem_callback(void *contents, size_t size, size_t nmemb, void *userp)
 {
     size_t realsize = size * nmemb;
-    mem_struct *mem = (mem_struct *)userp;
+    struct mem_struct_s *mem = (struct mem_struct_s *)userp;
 
     char *ptr = realloc(mem->memory, mem->size + realsize + 1);
-    if (ptr == NULL) {
-        fprintf(stderr, "Not enough memory (realloc returned NULL)\n");
-        exit(EXIT_FAILURE);
-    }
+    MCHECK(ptr);
 
     mem->memory = ptr;
     memcpy(&(mem->memory[mem->size]), contents, realsize);
@@ -20,44 +28,29 @@ static size_t write_mem_callback(void *contents, size_t size, size_t nmemb, void
     return realsize;
 }
 
-net_info *get_local_ip(void)
+struct net_info_s *get_local_ip(void)
 {
-    net_info *netinfo = (net_info *) calloc(1, sizeof(net_info));
-    if (netinfo == NULL) {
-        fprintf(stderr, "Could not allocate memory.\n");
-        exit(EXIT_FAILURE);
-    }
-
+    struct net_info_s *netinfo = NEW(struct net_info_s);
     char host_buffer[MAX_HOST];
     struct hostent *host_entry;
     int hostname;
 
-    /* Retrieve hostname */
     hostname = gethostname(host_buffer, MAX_HOST);
     if (hostname == -1) {
-        perror("gethostname ");
-        exit(EXIT_FAILURE);
+        ABORT(gethostname);
     }
 
     netinfo->host = strdup(host_buffer);
-    if (netinfo->host == NULL) {
-        perror("strdup ");
-        exit(EXIT_FAILURE);
-    }
 
-    /* Retrieve host information */
     host_entry = gethostbyname(netinfo->host);
     if (host_entry == NULL) {
-        perror("gethostbyname ");
-        exit(EXIT_FAILURE);
+        ABORT(gethostbyname);
     }
 
-    /* Convert an Internet network ddress to ASCII string */
-    netinfo->ip = inet_ntoa(*((struct in_addr*)
-                           host_entry->h_addr_list[0]));
+    // Convert an Internet network address to ASCII string
+    netinfo->ip = inet_ntoa(*((struct in_addr*) host_entry->h_addr_list[0]));
     if (netinfo->ip == NULL) {
-        perror("inet_ntoa ");
-        exit(EXIT_FAILURE);
+        ABORT(inet_ntoa);
     }
 
     return netinfo;
@@ -71,23 +64,20 @@ char *get_public_ip(void)
     CURL *curl_handle;
     CURLcode res;
 
-    mem_struct chunk;
-    /* will be grown as needed by the realloc above */
-    chunk.memory = (char *) malloc(sizeof(char));
-    /* no data at this point */
+    struct mem_struct_s chunk;
+
+    chunk.memory = NEW(char);
     chunk.size = 0;
 
     curl_global_init(CURL_GLOBAL_ALL);
-    /* init the curl session */
     curl_handle = curl_easy_init();
 
-    if (curl_handle != NULL)
-    {
-        /* specify URL to get */
+    if (curl_handle != NULL) {
+        // specify URL to get
         curl_easy_setopt(curl_handle, CURLOPT_URL, url);
-        /* send all data to this function  */
+        // send all data to this function
         curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, write_mem_callback);
-        /* ass 'chunk' struct to the callback function */
+        // ass 'chunk' struct to the callback function
         curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&chunk);
 
         res = curl_easy_perform(curl_handle);

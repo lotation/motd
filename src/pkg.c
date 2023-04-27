@@ -1,5 +1,6 @@
-#include "pkg.h"
+#include <pacutils.h>
 
+#include "pkg.h"
 
 pu_config_t *config = NULL;
 alpm_handle_t *handle = NULL;

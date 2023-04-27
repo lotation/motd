@@ -1,32 +1,23 @@
 #ifndef IP_H
 #define IP_H
 
-#include <stdio.h>         // basic I/O
-#include <stdlib.h>        // malloc, free, exit
-#include <string.h>        // strings utils
+#include "motd.h"
 
-#include <unistd.h>        // POSIX API
-#include <netdb.h>         // gethostname
-/* #include <netinet/in.h>    */
-#include <arpa/inet.h>     // IP address
+#define MAX_HOST  128
+// old 64
+#define IP_STR     37 /* ((3 char * 4 fields) + 3 dots) * 2 ip_addr + 4 spaces + 2 parenthesis + 1 '\0'  = 37 */
 
-#include <curl/curl.h>     // CURL HTTP GET
-
-#define MAX_HOST 128
-#define IP_STR    64 /* ((3 char * 4 campi) + 3 dots) * 2 ip_addr + 4 spazi + 2 parentesi + 1 '\0'  = 37 */
-
-typedef struct mem_struct_ {
+struct mem_struct_s {
     char *memory;
     size_t size;
-} mem_struct;
+};
 
-typedef struct net_info_ {
+struct net_info_s {
     char *host;
     char *ip;
-} net_info;
+};
 
-//size_t write_mem_callback(void *contents, size_t size, size_t nmemb, void *userp);
-net_info *get_local_ip(void);
+struct net_info_s *get_local_ip(void);
 char *get_public_ip(void);
 
 #endif
