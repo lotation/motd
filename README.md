@@ -1,5 +1,5 @@
 # motd
-Simple message of the day with few informations for arch-based distro
+Simple message of the day with little information for Arch-based distros
 
 # Dependencies:
 - `curl`        (public IP)
