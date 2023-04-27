@@ -6,7 +6,7 @@ TARGET = motd
 
 # Directories, Source, Includes, Objects and Binary
 SRCDIR = src
-INCDIR = lib
+INCDIR = include
 BUILDDIR  = obj
 TARGETDIR = bin
 

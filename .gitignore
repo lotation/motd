@@ -4,6 +4,8 @@ obj
 .idea
 .vscode
 
+*.tar*
+
 gmon.out
 **/.nvimlog
 **/*.old

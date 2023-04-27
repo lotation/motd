@@ -1,0 +1,16 @@
+pkgbase = motd
+	pkgdesc = Simple MOTD tool written in C
+	pkgver = 0.1
+	pkgrel = 1
+	url = https://gitlab.com/lotation/motd
+	arch = x86_64
+	license = AGPLv3
+	makedepends = git
+	depends = curl
+	depends = pacutils
+	provides = motd
+	conflicts = motd
+	source = motd::git+https://gitlab.com/lotation/motd.git
+	sha256sums = SKIP
+
+pkgname = motd
