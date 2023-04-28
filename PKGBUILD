@@ -22,5 +22,5 @@ build() {
 package() {
 	cd "$pkgname"
 
-	install -vDm 755 bin/$pkgname $pkgdir/usr/local/bin/$pkgname
+	make install
 }

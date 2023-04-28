@@ -12,10 +12,9 @@ TARGETDIR = bin
 
 # Flags, Libraries and Includes
 # SANITZE = -fsanitize=address,leak,alignment
-# CFLAGS  = -O3 -march=native -ffast-math
-# CFLAGS  = -Wall -Wextra -Werror -pedantic -Wl,-dead_strip -Og $(SANITZE) -funroll-loops -fomit-frame-pointer -g3
-CFLAGS  = -Wall -Wextra -Werror -Wformat=2 -g
-LDFLAGS = $(SANITZE)
+# CFLAGS  = -Wall -Wextra -Werror -Wformat=2 -Wl,-dead_strip -Og $(SANITZE) -funroll-loops -fomit-frame-pointer -g3
+CFLAGS  = -O3 -march=native -ffast-math
+# LDFLAGS = $(SANITZE)
 LIB     = -lalpm -lpacutils -lcurl 
 INC     = -I $(INCDIR)
 
@@ -59,7 +58,7 @@ $(BUILDDIR)/%.o: $(SRCDIR)/%.c
 	$(CC) $(CFLAGS) $(INC) -c -o $@ $<
 
 install: $(TARGETDIR)/$(TARGET)
-	install -m 755 $(TARGETDIR)/$(TARGET) $(PREFIX)/$(TARGETDIR)/$(TARGET)
+	install -Dm 755  $(TARGETDIR)/$(TARGET) $(PREFIX)/$(TARGETDIR)/$(TARGET)
 
 uninstall:
 	$(RM) $(RMFLAGS) $(PREFIX)/$(TARGETDIR)/$(TARGET)
